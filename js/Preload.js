@@ -5,6 +5,7 @@ Frogr.Preload = function(){};
 Frogr.Preload.prototype = {
     preload: function(){
         //load game assets
+        this.load.spritesheet('bat', 'assets/bat-fly.png', 40, 40);
         this.load.image('spider', 'assets/spider.png');
         this.load.image('snake', 'assets/spider.png');
         this.load.image('rat', 'assets/spider.png');

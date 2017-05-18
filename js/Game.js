@@ -49,6 +49,8 @@ class Enemy extends Board {
                     this.board[this.row][pos - 1] = 1;
                     this.sprite.x -= this.moveDistance;
                     this.direction = '<';
+
+                    this.sprite.animations.play('fly-left');
                 }
             } else {
                 if (pos > 0) {
@@ -58,6 +60,8 @@ class Enemy extends Board {
                     this.board[this.row][pos + 1] = 1;
                     this.sprite.x += this.moveDistance;
                     this.direction = '>';
+
+                    this.sprite.animations.play('fly-right');
                 }
             }
 
@@ -83,24 +87,24 @@ Frogr.Game.prototype = {
 
         // Add enemies.
         this.spiderSprite = this.game.add.sprite(40, 40, 'spider');
-        //this.spiderSprite.enableBody = true;
-
         this.snakeSprite = this.game.add.sprite(120, 80, 'snake');
-        //this.snakeSprite.enableBody = true;
+        this.batSprite = this.game.add.sprite(80, 120, 'bat');
 
-        this.ratSprite = this.game.add.sprite(80, 120, 'rat');
-        //this.ratSprite.enableBody = true;
+        // Add animations
+        this.batSprite.animations.add('fly-left', [3,4,5], 5, true);
+        this.batSprite.animations.add('fly-right', [0,1,2], 5, true);
+        this.batSprite.animations.play('fly-right');
 
         this.spider = new Enemy('spider', 0, this.spiderSprite);
         this.snake = new Enemy('snake', 1, this.snakeSprite);
-        this.rat = new Enemy('rat', 2, this.ratSprite);
+        this.bat = new Enemy('bat', 2, this.batSprite);
 
         // Add enemies to a group to make collision easier.
         this.enemies = this.game.add.group();
         this.enemies.enableBody = true;
         this.enemies.add(this.spiderSprite);
         this.enemies.add(this.snakeSprite);
-        this.enemies.add(this.ratSprite);
+        this.enemies.add(this.batSprite);
 
         // Move every x seconds.
         this.game.time.events.loop(500, this.move, this);
@@ -127,7 +131,7 @@ Frogr.Game.prototype = {
     move: function() {
         this.spider.move();
         this.snake.move();
-        this.rat.move();
+        this.bat.move();
     },
     gameOver: function() {
         Frogr.game.state.start('GameOver');

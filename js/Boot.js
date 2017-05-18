@@ -7,8 +7,7 @@ Frogr.Boot.prototype = {
         //this.load.image('logo', 'assets/logo.png');
     },
     create: function(){
-        //loading screen will have a white background
-        this.game.stage.backgroundColor = '#317873';
+        this.game.stage.backgroundColor = '#000';
 
         //physics system for movement
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
