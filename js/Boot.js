@@ -7,7 +7,7 @@ Frogr.Boot.prototype = {
         //this.load.image('logo', 'assets/logo.png');
     },
     create: function(){
-        this.game.stage.backgroundColor = '#000';
+        this.game.stage.backgroundColor = '#333438';
 
         //physics system for movement
         this.game.physics.startSystem(Phaser.Physics.ARCADE);

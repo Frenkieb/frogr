@@ -50,7 +50,7 @@ class Enemy extends Board {
                     this.sprite.x -= this.moveDistance;
                     this.direction = '<';
 
-                    this.sprite.animations.play('fly-left');
+                    this.sprite.animations.play('left');
                 }
             } else {
                 if (pos > 0) {
@@ -61,7 +61,7 @@ class Enemy extends Board {
                     this.sprite.x += this.moveDistance;
                     this.direction = '>';
 
-                    this.sprite.animations.play('fly-right');
+                    this.sprite.animations.play('right');
                 }
             }
 
@@ -75,6 +75,12 @@ class Enemy extends Board {
 
 Frogr.Game.prototype = {
     create: function() {
+        this.game.score = 0;
+
+        var style = { fill: "#fff", align: "right", boundsAlignH: 'right' };
+        this.game.scoreLabel = this.game.add.text(143, 5, " 0", style);
+        this.game.scoreLabel.font = 'Press Start 2P';
+
         // Enable cursor keys.
         this.game.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -86,24 +92,32 @@ Frogr.Game.prototype = {
         this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
 
         // Add enemies.
-        this.spiderSprite = this.game.add.sprite(40, 40, 'spider');
-        this.snakeSprite = this.game.add.sprite(120, 80, 'snake');
         this.batSprite = this.game.add.sprite(80, 120, 'bat');
+        this.ghostSprite = this.game.add.sprite(40, 40, 'ghost');
+        this.skeletonSprite = this.game.add.sprite(120, 80, 'skeleton');
 
         // Add animations
-        this.batSprite.animations.add('fly-left', [3,4,5], 5, true);
-        this.batSprite.animations.add('fly-right', [0,1,2], 5, true);
-        this.batSprite.animations.play('fly-right');
+        this.batSprite.animations.add('left', [3,4,5], 5, true);
+        this.batSprite.animations.add('right', [0,1,2], 5, true);
+        this.batSprite.animations.play('right');
 
-        this.spider = new Enemy('spider', 0, this.spiderSprite);
-        this.snake = new Enemy('snake', 1, this.snakeSprite);
+        this.ghostSprite.animations.add('left', [3,4,5], 5, true);
+        this.ghostSprite.animations.add('right', [0,1,2], 5, true);
+        this.ghostSprite.animations.play('right');
+
+        this.skeletonSprite.animations.add('left', [4,5,6], 5, true);
+        this.skeletonSprite.animations.add('right', [0,1,2,3], 5, true);
+        this.skeletonSprite.animations.play('right');
+
+        this.ghost = new Enemy('ghost', 0, this.ghostSprite);
+        this.skeleton = new Enemy('skeleton', 1, this.skeletonSprite);
         this.bat = new Enemy('bat', 2, this.batSprite);
 
         // Add enemies to a group to make collision easier.
         this.enemies = this.game.add.group();
         this.enemies.enableBody = true;
-        this.enemies.add(this.spiderSprite);
-        this.enemies.add(this.snakeSprite);
+        this.enemies.add(this.ghostSprite);
+        this.enemies.add(this.skeletonSprite);
         this.enemies.add(this.batSprite);
 
         // Move every x seconds.
@@ -127,11 +141,20 @@ Frogr.Game.prototype = {
     },
     update: function() {
         this.game.physics.arcade.collide(this.player, this.enemies, this.gameOver);
+
+        if (this.player.y == 0) {
+            this.addScore();
+            this.player.y = 160;
+        }
     },
     move: function() {
-        this.spider.move();
-        this.snake.move();
+        this.ghost.move();
+        this.skeleton.move();
         this.bat.move();
+    },
+    addScore: function() {
+        this.game.score += 1;
+        this.game.scoreLabel.text = ( this.game.score >= 10 ) ? this.game.score : ' ' + this.game.score;
     },
     gameOver: function() {
         Frogr.game.state.start('GameOver');
