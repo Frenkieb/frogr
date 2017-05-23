@@ -75,6 +75,9 @@ class Enemy extends Board {
 
 Frogr.Game.prototype = {
     create: function() {
+        // Add background
+        this.game.add.sprite(0, 0, 'background');
+
         this.game.score = 0;
 
         var style = { fill: "#fff", align: "right", boundsAlignH: 'right' };
