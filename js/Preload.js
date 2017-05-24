@@ -10,6 +10,7 @@ Frogr.Preload.prototype = {
         this.load.spritesheet('skeleton', 'assets/skeleton.png', 40, 40);
         //this.load.image('rat', 'assets/spider.png');
         this.load.image('player', 'assets/player.png');
+        this.load.image('ring', 'assets/ring.png');
         this.load.image('background', 'assets/background.jpg')
 
         this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');

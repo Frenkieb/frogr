@@ -79,6 +79,7 @@ Frogr.Game.prototype = {
         this.game.add.sprite(0, 0, 'background');
 
         this.game.score = 0;
+        this.game.canMove = true;
 
         var style = { fill: "#fff", align: "right", boundsAlignH: 'right' };
         this.game.scoreLabel = this.game.add.text(143, 5, " 0", style);
@@ -88,6 +89,9 @@ Frogr.Game.prototype = {
         this.game.cursors = this.game.input.keyboard.createCursorKeys();
 
         this.board = new Board();
+
+        // Add ring
+        this.ring = this.game.add.sprite(85, 5, 'ring');
 
         // Add player.
         this.player = this.game.add.sprite(80, 160, 'player');
@@ -129,7 +133,7 @@ Frogr.Game.prototype = {
         // Move player up just once per keypress.
         keyUp = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
         keyUp.onDown.add(function() {
-            if ( this.player.y > 0 ) {
+            if (this.player.y > 0) {
                 this.player.y -= 40;
             }
         }, this);
@@ -137,7 +141,7 @@ Frogr.Game.prototype = {
         // Move player down just once per keypress.
         keyDown = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         keyDown.onDown.add(function() {
-            if ( this.player.y < 160 ) {
+            if ( this.player.y < 160 && this.game.canMove) {
                 this.player.y += 40;
             }
         }, this);
@@ -146,8 +150,8 @@ Frogr.Game.prototype = {
         this.game.physics.arcade.collide(this.player, this.enemies, this.gameOver);
 
         if (this.player.y == 0) {
-            this.addScore();
-            this.player.y = 160;
+            this.game.canMove = false;
+            this.game.time.events.add(Phaser.Timer.SECOND * 0.3 , this.addScore, this);
         }
     },
     move: function() {
@@ -156,8 +160,12 @@ Frogr.Game.prototype = {
         this.bat.move();
     },
     addScore: function() {
-        this.game.score += 1;
-        this.game.scoreLabel.text = ( this.game.score >= 10 ) ? this.game.score : ' ' + this.game.score;
+        if ( this.player.y < 160 ) {
+            this.game.score += 1;
+            this.game.scoreLabel.text = ( this.game.score >= 10 ) ? this.game.score : ' ' + this.game.score;
+            this.player.y = 160;
+            this.game.canMove = true;
+        }
     },
     gameOver: function() {
         Frogr.game.state.start('GameOver');
