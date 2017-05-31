@@ -22,6 +22,12 @@ class Enemy extends Board {
         this.sprite = sprite;
         this.direction = this.getRandomDirection();
         this.moveDistance = 40;
+
+        if (this.direction == '>') {
+            this.sprite.animations.play('right');
+        } else {
+            this.sprite.animations.play('left');
+        }
     }
 
     getMoveTime() {
@@ -97,6 +103,8 @@ Frogr.Game.prototype = {
         this.player = this.game.add.sprite(80, 160, 'player');
         this.player.enableBody = true;
         this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+        this.player.animations.add('play', [0,1,2,3,4,5,6,7,8], 10, true);
+        this.player.animations.play('play');
 
         // Add enemies.
         this.batSprite = this.game.add.sprite(80, 120, 'bat');
@@ -106,15 +114,12 @@ Frogr.Game.prototype = {
         // Add animations
         this.batSprite.animations.add('left', [3,4,5], 5, true);
         this.batSprite.animations.add('right', [0,1,2], 5, true);
-        this.batSprite.animations.play('right');
 
         this.ghostSprite.animations.add('left', [3,4,5], 5, true);
         this.ghostSprite.animations.add('right', [0,1,2], 5, true);
-        this.ghostSprite.animations.play('right');
 
         this.skeletonSprite.animations.add('left', [4,5,6], 5, true);
         this.skeletonSprite.animations.add('right', [0,1,2,3], 5, true);
-        this.skeletonSprite.animations.play('right');
 
         this.ghost = new Enemy('ghost', 0, this.ghostSprite);
         this.skeleton = new Enemy('skeleton', 1, this.skeletonSprite);
@@ -127,7 +132,7 @@ Frogr.Game.prototype = {
         this.enemies.add(this.skeletonSprite);
         this.enemies.add(this.batSprite);
 
-        // Move every x seconds.
+        // Move enemies every x seconds.
         this.game.time.events.loop(500, this.move, this);
 
         // Move player up just once per keypress.
@@ -139,17 +144,18 @@ Frogr.Game.prototype = {
         }, this);
 
         // Move player down just once per keypress.
-        keyDown = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        /*keyDown = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         keyDown.onDown.add(function() {
             if ( this.player.y < 160 && this.game.canMove) {
                 this.player.y += 40;
             }
-        }, this);
+        }, this);*/
     },
     update: function() {
         this.game.physics.arcade.collide(this.player, this.enemies, this.gameOver);
 
         if (this.player.y == 0) {
+            this.ring.visible = false;
             this.game.canMove = false;
             this.game.time.events.add(Phaser.Timer.SECOND * 0.3 , this.addScore, this);
         }
@@ -165,6 +171,7 @@ Frogr.Game.prototype = {
             this.game.scoreLabel.text = ( this.game.score >= 10 ) ? this.game.score : ' ' + this.game.score;
             this.player.y = 160;
             this.game.canMove = true;
+            this.ring.visible = true;
         }
     },
     gameOver: function() {

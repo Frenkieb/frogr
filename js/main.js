@@ -3,11 +3,9 @@ Frogr.game = new Phaser.Game(200, 200, Phaser.AUTO);
 
 WebFontConfig = {
     //active: function() { Frogr.game.time.events.add(Phaser.Timer.SECOND, createText, this); },
-
     google: {
       families: ['Press Start 2P']
     }
-
 };
 
 Frogr.game.state.add('Boot', Frogr.Boot);
